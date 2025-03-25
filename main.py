@@ -6,29 +6,27 @@ x0, y0, h, xn = 0, 0, 0.1, 1
 
 epsilon = 0.001
 
-# Точные значения
 x_table = np.arange(x0, xn + h, h)
 y_table = np.zeros_like(x_table)
 for i in range(len(x_table)):
     y_table[i] = correct_f(x_table[i])
-print('Таблица точных значений: \n', x_table, '\n', y_table, '\n')
 
-# ----------------------------------------------Эйлер-------------------------------------------
+print('---------------------------------------------------------------------')
+x_e, y_e, i1 = Euler(x0, y0, h, xn)
 
-# Обычный
-x_e, y_e, i = Euler(x0, y0, h, xn)
-print('Таблица значений в методе Эйлера: \n', x_e, '\n', y_e, '\n')
-
-print(f'Число итераций: {i} \n')
+(x_e1, y_e1, i2) = modified_Euler(x0, y0, h, xn, epsilon)
 
 
-# Модифицированный
-(x_e1, y_e1, i) = modified_Euler(x0, y0, h, xn, epsilon)
-print('Таблица значений в модифицированном методе Эйлера: \n', x_e1, '\n', y_e1, '\n')
+print("   Точные           Эйлер        Модиф-й Эйлер")
+for i in range(len(x_table)):
+    print(f"{y_table[i]:.9f}", '\t', f"{y_e[i]:.9f}", '\t', f"{y_e1[i]:.9f}")
 
-print(f'Число итераций: {i} \n')
+print('\nМакс Отклонение ', f"{check(y_table, y_e):.9f}", '\t', f"{check(y_table, y_e1):.9f}")
+print('Итерации        ', i1, '             ', i2)
 
-plt.subplot(131)
+print('---------------------------------------------------------------------')
+
+# plt.subplot(131)
 plt.title('Эйлер', fontsize=14, fontname='Times New Roman')
 plt.plot(x_table, y_table, 'go')
 # Дополнительное построение  (соединяем точки точных значений)
@@ -42,11 +40,13 @@ plt.xlabel('x')
 plt.ylabel('y')
 plt.legend()
 plt.grid()
+plt.show()
 
+'''
 # ------------------------------------------Рунге-Кутта-----------------------------------------
 
 x0, y0, h, xn = 0, 0, 0.1, 1
-x_rk, y_rk = runge_kutta_4(x0, y0, h, xn)
+x_rk, y_rk = Runge_kutta_4(x0, y0, h, xn)
 
 plt.subplot(132)
 plt.title('Рунге-Кутта', fontsize=14, fontname='Times New Roman')
@@ -64,7 +64,7 @@ plt.grid()
 
 # ---------------------------------------------Адамс----------------------------------------------
 
-x_adams, y_adams = adams_bashforth_4(x0, y0, h, xn)
+x_adams, y_adams = Adams(x0, y0, h, xn)
 
 plt.subplot(133)
 plt.title('Адамс', fontsize=14, fontname='Times New Roman')
@@ -78,4 +78,4 @@ plt.xlabel('x')
 plt.ylabel('y')
 plt.legend()
 plt.grid()
-plt.show()
+'''
