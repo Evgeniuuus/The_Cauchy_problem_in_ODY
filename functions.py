@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 
 def f(x, y):
@@ -54,7 +55,7 @@ def Runge_kutta_4(x0, y0, h, xn):
     y = np.zeros_like(x)
     y[0] = y0
     i = 0
-    for j in range(len(x) - 1):
+    for j in tqdm(range(len(x) - 1), ncols=40):
         k1 = h * f(x[j], y[j])
         k2 = h * f(x[j] + h / 2, y[j] + k1 / 2)
         k3 = h * f(x[j] + h / 2, y[j] + k2 / 2)
@@ -65,14 +66,22 @@ def Runge_kutta_4(x0, y0, h, xn):
 
 
 def Adams(x0, y0, h, xn):
-    x, y_rk = Runge_kutta_4(x0, y0, h, x0 + 3 * h)
+    x, y_rk, i = Runge_kutta_4(x0, y0, h, x0 + 3 * h)
     x = np.arange(x0, xn + h, h)
     y = np.zeros_like(x)
     y[:4] = y_rk[:4]
 
-    for i in range(3, len(x) - 1):
-        y[i + 1] = y[i] + h / 24 * (
-                    55 * f(x[i], y[i]) - 59 * f(x[i - 1], y[i - 1]) + 37 * f(x[i - 2], y[i - 2]) - 9 * f(x[i - 3],
-                                                                                                         y[i - 3]))
+    for j in tqdm(range(3, len(x) - 1), ncols=40):
+        y_predict = y[j] + h / 24 * (
+                55 * f(x[j], y[j]) - 59 * f(x[j - 1], y[j - 1]) +
+                37 * f(x[j - 2], y[j - 2])
+                - 9 * f(x[j - 3], y[j - 3]))
 
-    return x, y
+        y[j+1] = y[j] + h/24 * (
+            9*f(x[j+1], y_predict) + 19*f(x[j], y[j]) -
+            5*f(x[j-1], y[j-1]) + f(x[j-2], y[j-2])
+        )
+
+        i += 2
+
+    return x, y, i
