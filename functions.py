@@ -23,11 +23,10 @@ def Euler(x0, y0, h, xn):
     x = np.arange(x0, xn + h, h)
     y = np.zeros_like(x)
     y[0] = y0
-    i = 0
-    for i in range(len(x) - 1):
-        y[i + 1] = y[i] + h * f(x[i], y[i])
+    for j in range(len(x) - 1):
+        y[j + 1] = y[j] + h * f(x[j], y[j])
 
-    return x, y, i
+    return x, y
 
 
 # Модифицированный Эйлер
@@ -35,38 +34,34 @@ def modified_Euler(x0, y0, h, xn, epsilon):
     x = np.arange(x0, xn + h, h)
     y = np.zeros_like(x)
     y[0] = y0
-    i = 0
 
     for j in range(len(x) - 1):
         y_k = y[j] + h * f(x[j], y[j])
         while True:
             y_k_1 = y[j] + (h / 2) * (f(x[j], y[j]) + f(x[j + 1], y_k))
-            i += 1
             if abs(y_k_1 - y_k) < epsilon:
                 break
             y_k = y_k_1
         y[j + 1] = y_k_1
 
-    return x, y, i
+    return x, y
 
 
 def Runge_kutta_4(x0, y0, h, xn):
     x = np.arange(x0, xn + h, h)
     y = np.zeros_like(x)
     y[0] = y0
-    i = 0
     for j in tqdm(range(len(x) - 1), ncols=40):
         k1 = h * f(x[j], y[j])
         k2 = h * f(x[j] + h / 2, y[j] + k1 / 2)
         k3 = h * f(x[j] + h / 2, y[j] + k2 / 2)
         k4 = h * f(x[j] + h, y[j] + k3)
         y[j + 1] = y[j] + (k1 + 2 * k2 + 2 * k3 + k4) / 6
-        i += 1
-    return x, y, i
+    return x, y
 
 
 def Adams(x0, y0, h, xn):
-    x, y_rk, i = Runge_kutta_4(x0, y0, h, x0 + 3 * h)
+    x, y_rk = Runge_kutta_4(x0, y0, h, x0 + 3 * h)
     x = np.arange(x0, xn + h, h)
     y = np.zeros_like(x)
     y[:4] = y_rk[:4]
@@ -77,11 +72,9 @@ def Adams(x0, y0, h, xn):
                 37 * f(x[j - 2], y[j - 2])
                 - 9 * f(x[j - 3], y[j - 3]))
 
-        y[j+1] = y[j] + h/24 * (
-            9*f(x[j+1], y_predict) + 19*f(x[j], y[j]) -
-            5*f(x[j-1], y[j-1]) + f(x[j-2], y[j-2])
+        y[j + 1] = y[j] + h / 24 * (
+                9 * f(x[j + 1], y_predict) + 19 * f(x[j], y[j]) -
+                5 * f(x[j - 1], y[j - 1]) + f(x[j - 2], y[j - 2])
         )
 
-        i += 2
-
-    return x, y, i
+    return x, y

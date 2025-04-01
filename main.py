@@ -12,9 +12,9 @@ y_table = np.zeros_like(x_table)
 for i in range(len(x_table)):
     y_table[i] = correct_f(x_table[i])
 
-x_e, y_e, i1 = Euler(x0, y0, h, xn)
+x_e, y_e = Euler(x0, y0, h, xn)
 
-x_e1, y_e1, i2 = modified_Euler(x0, y0, h, xn, epsilon)
+x_e1, y_e1 = modified_Euler(x0, y0, h, xn, epsilon)
 
 # ------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ plt.grid()
 # ------------------------------------------------------------------------
 
 x0, y0, h, xn = 0, 0, 0.1, 1
-x_rk, y_rk, i3 = Runge_kutta_4(x0, y0, h, xn)
+x_rk, y_rk = Runge_kutta_4(x0, y0, h, xn)
 
 plt.subplot(132)
 plt.title('Рунге-Кутта', fontsize=14, fontname='Times New Roman')
@@ -53,7 +53,7 @@ plt.grid()
 
 # ------------------------------------------------------------------------
 
-x_adams, y_adams, i4 = Adams(x0, y0, h, xn)
+x_adams, y_adams = Adams(x0, y0, h, xn)
 plt.subplot(133)
 plt.title('Адамс', fontsize=14, fontname='Times New Roman')
 plt.plot(x_table, y_table, 'go')
@@ -90,7 +90,6 @@ footer = [
                          f"{check(y_table, y_e1):.9f}",
                          f"{check(y_table, y_rk):.9f}",
                          f"{check(y_table, y_adams):.9f}"],
-    ["Количество итераций", i1, i2, i3, i4]
 ]
 
 print("\n" + tabulate(footer, headers=["",
